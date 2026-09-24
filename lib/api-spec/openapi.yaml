@@ -9,6 +9,7 @@ servers:
 tags:
   - name: health
   - name: permits
+  - name: questions
 paths:
   /healthz:
     get:
@@ -119,6 +120,35 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Notification"
+  /questions:
+    get:
+      operationId: listQuestions
+      tags: [questions]
+      responses:
+        "200":
+          description: Saved permitting questions, newest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PermitQuestion"
+    post:
+      operationId: askPermitQuestion
+      tags: [questions]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AskPermitQuestionInput"
+      responses:
+        "201":
+          description: Generated answer saved to history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PermitQuestion"
 components:
   schemas:
     HealthStatus:
@@ -187,3 +217,17 @@ components:
         message: { type: string }
         createdAt: { type: string, format: date-time }
       required: [id, message, createdAt]
+    AskPermitQuestionInput:
+      type: object
+      properties:
+        question: { type: string, minLength: 1, maxLength: 4000 }
+      required: [question]
+      additionalProperties: false
+    PermitQuestion:
+      type: object
+      properties:
+        id: { type: integer }
+        question: { type: string }
+        answer: { type: string }
+        createdAt: { type: string, format: date-time }
+      required: [id, question, answer, createdAt]

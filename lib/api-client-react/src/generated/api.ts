@@ -21,8 +21,10 @@ import type {
 
 import type {
   AnalyzeInput,
+  AskPermitQuestionInput,
   HealthStatus,
   Notification,
+  PermitQuestion,
   PermitReport,
   ProgressUpdate,
   ReportItem,
@@ -578,4 +580,157 @@ export function useListNotifications<TData = Awaited<ReturnType<typeof listNotif
 
 
 
+
+export const getListQuestionsUrl = () => {
+
+
+
+
+  return `/api/questions`
+}
+
+export const listQuestions = async ( options?: Parameters<typeof customFetch>[1]): Promise<PermitQuestion[]> => {
+
+  return customFetch<PermitQuestion[]>(getListQuestionsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListQuestionsQueryKey = () => {
+    return [
+    `/api/questions`
+    ] as const;
+    }
+
+
+export const getListQuestionsQueryOptions = <TData = Awaited<ReturnType<typeof listQuestions>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listQuestions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListQuestionsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listQuestions>>> = ({ signal }) => listQuestions({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listQuestions>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListQuestionsQueryResult = NonNullable<Awaited<ReturnType<typeof listQuestions>>>
+export type ListQuestionsQueryError = ErrorType<unknown>
+
+
+
+export function useListQuestions<TData = Awaited<ReturnType<typeof listQuestions>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listQuestions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListQuestionsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getAskPermitQuestionUrl = () => {
+
+
+
+
+  return `/api/questions`
+}
+
+export const askPermitQuestion = async (askPermitQuestionInput: AskPermitQuestionInput, options?: Parameters<typeof customFetch>[1]): Promise<PermitQuestion> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<PermitQuestion>(getAskPermitQuestionUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(askPermitQuestionInput)
+  }
+);}
+
+
+
+
+
+export const getAskPermitQuestionMutationKey = () => ['askPermitQuestion'] as const;
+
+export const getAskPermitQuestionMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof askPermitQuestion>>, TError,AskPermitQuestionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof askPermitQuestion>>, TError,AskPermitQuestionMutationVariables, TContext> => {
+
+const mutationKey = getAskPermitQuestionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof askPermitQuestion>>, AskPermitQuestionMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  askPermitQuestion(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AskPermitQuestionMutationResult = NonNullable<Awaited<ReturnType<typeof askPermitQuestion>>>
+    export type AskPermitQuestionMutationBody = BodyType<AskPermitQuestionInput>
+    export type AskPermitQuestionMutationError = ErrorType<unknown>
+    export type AskPermitQuestionMutationVariables = {data: BodyType<AskPermitQuestionInput>}
+
+    export const useAskPermitQuestion = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof askPermitQuestion>>, TError,AskPermitQuestionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof askPermitQuestion>>,
+        TError,
+        AskPermitQuestionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAskPermitQuestionMutationOptions(options));
+    }
 

@@ -7,8 +7,10 @@
  */
 
 export * from './analyzeInput';
+export * from './askPermitQuestionInput';
 export * from './healthStatus';
 export * from './notification';
+export * from './permitQuestion';
 export * from './permitReport';
 export * from './progressUpdate';
 export * from './reportItem';

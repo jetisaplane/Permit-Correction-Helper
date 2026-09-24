@@ -78,3 +78,18 @@ export interface Notification {
   createdAt: string;
 }
 
+export interface AskPermitQuestionInput {
+  /**
+     * @minLength 1
+     * @maxLength 4000
+     */
+  question: string;
+}
+
+export interface PermitQuestion {
+  id: number;
+  question: string;
+  answer: string;
+  createdAt: string;
+}
+

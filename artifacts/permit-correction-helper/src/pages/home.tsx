@@ -13,6 +13,7 @@ import {
   Check,
   ChevronRight,
   ShieldAlert,
+  Menu,
 } from "lucide-react";
 import { 
   useListSamples,
@@ -69,10 +70,26 @@ export function TopNav() {
           </h1>
         </Link>
         
-        <div className="flex items-center gap-2 md:gap-4">
-          <Link href="/reports" className="text-sm font-medium text-primary hover:underline whitespace-nowrap">
-            Past Reports
-          </Link>
+        <div className="flex items-center gap-1 md:gap-4">
+          <nav aria-label="Main navigation" className="hidden md:flex items-center gap-4">
+            <Link href="/ask" className="text-sm font-medium text-primary hover:underline whitespace-nowrap">Ask a Question</Link>
+            <Link href="/history" className="text-sm font-medium text-primary hover:underline whitespace-nowrap">History</Link>
+            <Link href="/reports" className="text-sm font-medium text-primary hover:underline whitespace-nowrap">Past Reports</Link>
+          </nav>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open navigation">
+                <Menu className="w-5 h-5" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-52 p-2" align="end">
+              <nav aria-label="Mobile navigation" className="flex flex-col text-sm font-medium">
+                <Link href="/ask" className="rounded-md px-3 py-2 hover:bg-muted">Ask a Question</Link>
+                <Link href="/history" className="rounded-md px-3 py-2 hover:bg-muted">History</Link>
+                <Link href="/reports" className="rounded-md px-3 py-2 hover:bg-muted">Past Reports</Link>
+              </nav>
+            </PopoverContent>
+          </Popover>
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">

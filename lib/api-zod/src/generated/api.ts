@@ -112,3 +112,28 @@ export const ListNotificationsResponseItem = zod.object({
 export const ListNotificationsResponse = zod.array(ListNotificationsResponseItem)
 
 
+export const ListQuestionsResponseItem = zod.object({
+  "id": zod.number().int(),
+  "question": zod.string(),
+  "answer": zod.string(),
+  "createdAt": zod.coerce.date()
+})
+export const ListQuestionsResponse = zod.array(ListQuestionsResponseItem)
+
+
+export const askPermitQuestionBodyQuestionMax = 4000;
+
+
+
+export const AskPermitQuestionBody = zod.object({
+  "question": zod.string().min(1).max(askPermitQuestionBodyQuestionMax)
+})
+
+export const AskPermitQuestionResponse = zod.object({
+  "id": zod.number().int(),
+  "question": zod.string(),
+  "answer": zod.string(),
+  "createdAt": zod.coerce.date()
+})
+
+
