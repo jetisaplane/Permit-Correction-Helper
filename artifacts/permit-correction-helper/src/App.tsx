@@ -7,6 +7,7 @@ import NotFound from '@/pages/not-found';
 import {
   Route,
   Switch,
+  Redirect,
   useLocation,
   Router as WouterRouter,
 } from 'wouter';
@@ -14,7 +15,6 @@ import {
 import HomePage from '@/pages/home';
 import { ReportView, TopNav } from '@/pages/home';
 import PastReports from '@/pages/past-reports';
-import AskQuestion from '@/pages/ask-question';
 import History from '@/pages/history';
 
 const queryClient = new QueryClient();
@@ -26,7 +26,7 @@ function Router() {
     <RoutedErrorBoundary>
       <Switch>
         <Route path="/" component={HomePage} />
-        <Route path="/ask" component={AskQuestion} />
+        <Route path="/ask"><Redirect to="/" /></Route>
         <Route path="/history" component={History} />
         <Route path="/reports" component={PastReports} />
         <Route path="/reports/:id">

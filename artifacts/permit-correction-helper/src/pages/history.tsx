@@ -31,7 +31,7 @@ export default function History() {
           <Card><CardContent className="p-10 text-center space-y-4">
             <h2 className="font-serif text-xl font-semibold">No questions yet</h2>
             <p className="text-muted-foreground">Ask a permitting question to save your first answer here.</p>
-            <Button asChild><Link href="/ask">Ask a Question</Link></Button>
+            <Button asChild><Link href="/">Ask a Question</Link></Button>
           </CardContent></Card>
         ) : (
           <div className="space-y-4">

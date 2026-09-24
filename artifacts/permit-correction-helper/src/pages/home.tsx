@@ -36,6 +36,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { PermitQuestionForm } from "@/components/permit-question-form";
 
 export default function Home() {
   const [reportId, setReportId] = useState<number | null>(null);
@@ -72,7 +73,6 @@ export function TopNav() {
         
         <div className="flex items-center gap-1 md:gap-4">
           <nav aria-label="Main navigation" className="hidden md:flex items-center gap-4">
-            <Link href="/ask" className="text-sm font-medium text-primary hover:underline whitespace-nowrap">Ask a Question</Link>
             <Link href="/history" className="text-sm font-medium text-primary hover:underline whitespace-nowrap">History</Link>
             <Link href="/reports" className="text-sm font-medium text-primary hover:underline whitespace-nowrap">Past Reports</Link>
           </nav>
@@ -84,7 +84,6 @@ export function TopNav() {
             </PopoverTrigger>
             <PopoverContent className="w-52 p-2" align="end">
               <nav aria-label="Mobile navigation" className="flex flex-col text-sm font-medium">
-                <Link href="/ask" className="rounded-md px-3 py-2 hover:bg-muted">Ask a Question</Link>
                 <Link href="/history" className="rounded-md px-3 py-2 hover:bg-muted">History</Link>
                 <Link href="/reports" className="rounded-md px-3 py-2 hover:bg-muted">Past Reports</Link>
               </nav>
@@ -255,6 +254,8 @@ function UploadFlow({ onReportGenerated }: { onReportGenerated: (id: number) => 
           Upload your city correction letter. We extract what's met, what needs fixing, and explain bureaucratic comments in plain English.
         </p>
       </div>
+
+      <PermitQuestionForm />
 
       <Card className="border-dashed border-2 shadow-none border-border/60">
         <CardContent className="p-8">
