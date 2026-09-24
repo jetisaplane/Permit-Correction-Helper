@@ -21,11 +21,16 @@ export const ListSamplesResponseItem = zod.object({
 export const ListSamplesResponse = zod.array(ListSamplesResponseItem)
 
 
+export const analyzeLetterBodyLabelMax = 120;
+
+
+
 export const AnalyzeLetterBody = zod.object({
   "fileName": zod.string().optional(),
   "mimeType": zod.string().optional(),
   "fileData": zod.string().optional().describe('Base64 encoded file'),
-  "sampleId": zod.string().optional()
+  "sampleId": zod.string().optional(),
+  "label": zod.string().max(analyzeLetterBodyLabelMax).optional()
 })
 
 export const AnalyzeLetterResponse = zod.object({
@@ -44,6 +49,16 @@ export const AnalyzeLetterResponse = zod.object({
   "completed": zod.boolean()
 }))
 })
+
+
+export const ListReportsResponseItem = zod.object({
+  "id": zod.number().int(),
+  "label": zod.string(),
+  "address": zod.string(),
+  "status": zod.enum(['All met', 'Needs fixes']),
+  "createdAt": zod.coerce.date()
+})
+export const ListReportsResponse = zod.array(ListReportsResponseItem)
 
 
 export const GetReportParams = zod.object({

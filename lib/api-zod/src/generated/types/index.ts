@@ -14,3 +14,5 @@ export * from './progressUpdate';
 export * from './reportItem';
 export * from './reportItemStatus';
 export * from './sampleLetter';
+export * from './savedReport';
+export * from './savedReportStatus';

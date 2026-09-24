@@ -21,6 +21,24 @@ export interface AnalyzeInput {
   /** Base64 encoded file */
   fileData?: string;
   sampleId?: string;
+  /** @maxLength 120 */
+  label?: string;
+}
+
+export type SavedReportStatus = typeof SavedReportStatus[keyof typeof SavedReportStatus];
+
+
+export const SavedReportStatus = {
+  All_met: 'All met',
+  Needs_fixes: 'Needs fixes',
+} as const;
+
+export interface SavedReport {
+  id: number;
+  label: string;
+  address: string;
+  status: SavedReportStatus;
+  createdAt: string;
 }
 
 export type ReportItemStatus = typeof ReportItemStatus[keyof typeof ReportItemStatus];

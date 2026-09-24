@@ -12,4 +12,6 @@ export interface AnalyzeInput {
   /** Base64 encoded file */
   fileData?: string;
   sampleId?: string;
+  /** @maxLength 120 */
+  label?: string;
 }

@@ -51,6 +51,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PermitReport"
+  /reports:
+    get:
+      operationId: listReports
+      tags: [permits]
+      responses:
+        "200":
+          description: Saved reports, newest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SavedReport"
   /reports/{id}:
     get:
       operationId: getReport
@@ -127,7 +140,17 @@ components:
         mimeType: { type: string }
         fileData: { type: string, description: Base64 encoded file }
         sampleId: { type: string }
+        label: { type: string, maxLength: 120 }
       additionalProperties: false
+    SavedReport:
+      type: object
+      properties:
+        id: { type: integer }
+        label: { type: string }
+        address: { type: string }
+        status: { type: string, enum: ["All met", "Needs fixes"] }
+        createdAt: { type: string, format: date-time }
+      required: [id, label, address, status, createdAt]
     PermitReport:
       type: object
       properties:

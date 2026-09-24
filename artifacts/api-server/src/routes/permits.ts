@@ -1,10 +1,13 @@
 import { Router, type IRouter } from "express";
+import { desc, eq } from "drizzle-orm";
+import { db, permitReportsTable } from "@workspace/db";
 import {
   AnalyzeLetterBody,
   AnalyzeLetterResponse,
   GetReportParams,
   GetReportResponse,
   ListNotificationsResponse,
+  ListReportsResponse,
   ListSamplesResponse,
   UpdateReportItemBody,
   UpdateReportItemParams,
@@ -31,9 +34,6 @@ type Report = {
 };
 
 const router: IRouter = Router();
-const reports = new Map<number, Report>();
-const notifications: Array<{ id: number; message: string; createdAt: string }> = [];
-let nextReportId = 1;
 
 const samples = [
   {
@@ -48,8 +48,7 @@ const samples = [
   },
 ];
 
-function buildReport(needsFixes: boolean): Report {
-  const id = nextReportId++;
+function buildReport(needsFixes: boolean, id: number, createdAt: string): Report {
   const items: Item[] = [
     {
       id: id * 100 + 1,
@@ -121,16 +120,21 @@ function buildReport(needsFixes: boolean): Report {
     summary: needsFixes
       ? "The resubmittal addresses the site plan request, but planning and building corrections remain. Focus on FAR, second-story size, professional stamps, and fire access clarification."
       : "The revised package appears to address the City’s principal planning, building, and fire comments. Keep the supporting calculations with the resubmittal.",
-    createdAt: new Date().toISOString(),
+    createdAt,
     items,
   };
+}
+
+function savedReport(output: string): Report {
+  const parsed = GetReportResponse.parse(JSON.parse(output));
+  return { ...parsed, createdAt: parsed.createdAt.toISOString() };
 }
 
 router.get("/samples", (_req, res): void => {
   res.json(ListSamplesResponse.parse(samples));
 });
 
-router.post("/analyze", (req, res): void => {
+router.post("/analyze", async (req, res): Promise<void> => {
   const input = AnalyzeLetterBody.safeParse(req.body);
   if (!input.success) {
     res.status(400).json({ error: "Please choose a supported letter or sample." });
@@ -140,55 +144,116 @@ router.post("/analyze", (req, res): void => {
     res.status(400).json({ error: "Please select a PDF, PNG, or JPG file." });
     return;
   }
+  const sample = samples.find((candidate) => candidate.id === input.data.sampleId);
+  if (input.data.sampleId && !sample) {
+    res.status(400).json({ error: "Unknown sample letter." });
+    return;
+  }
+  if (!sample && (!input.data.fileName || !input.data.fileData)) {
+    res.status(400).json({ error: "Please select a letter file." });
+    return;
+  }
 
   const needsFixes =
     input.data.sampleId === "needs-fixes" ||
     (input.data.fileName?.toLowerCase().includes("fix") ?? false);
-  const report = buildReport(needsFixes);
-  reports.set(report.id, report);
-  notifications.unshift({
-    id: notifications.length + 1,
-    message: needsFixes
-      ? "Your submission needs changes. See the items below."
-      : "Good news! Your submission appears complete.",
-    createdAt: new Date().toISOString(),
+  const report = await db.transaction(async (tx) => {
+    const [row] = await tx.insert(permitReportsTable).values({
+      label: input.data.label?.trim() ?? "",
+      input: sample
+        ? `Sample: ${sample.title}. ${sample.description}`
+        : input.data.fileName!,
+      aiOutput: "{}",
+      address: "",
+      status: "Needs fixes",
+    }).returning();
+    const result = buildReport(needsFixes, row.id, row.createdAt.toISOString());
+    const status = result.items.every((item) => item.status === "met") ? "All met" : "Needs fixes";
+    await tx.update(permitReportsTable).set({
+      aiOutput: JSON.stringify(result),
+      status,
+      address: result.address,
+    }).where(eq(permitReportsTable.id, row.id));
+    return result;
   });
   res.status(201).json(AnalyzeLetterResponse.parse(report));
 });
 
-router.get("/reports/:id", (req, res): void => {
+router.get("/reports", async (_req, res): Promise<void> => {
+  const rows = await db
+    .select({
+      id: permitReportsTable.id,
+      label: permitReportsTable.label,
+      address: permitReportsTable.address,
+      status: permitReportsTable.status,
+      createdAt: permitReportsTable.createdAt,
+    })
+    .from(permitReportsTable)
+    .orderBy(desc(permitReportsTable.createdAt), desc(permitReportsTable.id));
+  res.json(ListReportsResponse.parse(rows.map((row) => ({
+    ...row,
+    createdAt: row.createdAt.toISOString(),
+  }))));
+});
+
+router.get("/reports/:id", async (req, res): Promise<void> => {
   const params = GetReportParams.safeParse(req.params);
   if (!params.success) {
     res.status(400).json({ error: "Invalid report." });
     return;
   }
-  const report = reports.get(params.data.id);
-  if (!report) {
+  const [row] = await db.select().from(permitReportsTable).where(eq(permitReportsTable.id, params.data.id));
+  if (!row) {
     res.status(404).json({ error: "Report not found." });
     return;
   }
-  res.json(GetReportResponse.parse(report));
+  res.json(savedReport(row.aiOutput));
 });
 
-router.patch("/reports/:reportId/items/:itemId", (req, res): void => {
+router.patch("/reports/:reportId/items/:itemId", async (req, res): Promise<void> => {
   const params = UpdateReportItemParams.safeParse(req.params);
   const body = UpdateReportItemBody.safeParse(req.body);
   if (!params.success || !body.success) {
     res.status(400).json({ error: "Invalid progress update." });
     return;
   }
-  const report = reports.get(params.data.reportId);
-  const item = report?.items.find((candidate) => candidate.id === params.data.itemId);
+  const item = await db.transaction(async (tx) => {
+    const [row] = await tx.select().from(permitReportsTable)
+      .where(eq(permitReportsTable.id, params.data.reportId)).for("update");
+    if (!row) return null;
+    const report = savedReport(row.aiOutput);
+    const item = report.items.find((candidate) => candidate.id === params.data.itemId);
+    if (!item) return null;
+    item.completed = body.data.completed;
+    await tx.update(permitReportsTable)
+      .set({ aiOutput: JSON.stringify(report) })
+      .where(eq(permitReportsTable.id, row.id));
+    return item;
+  });
   if (!item) {
     res.status(404).json({ error: "Checklist item not found." });
     return;
   }
-  item.completed = body.data.completed;
   res.json(UpdateReportItemResponse.parse(item));
 });
 
-router.get("/notifications", (_req, res): void => {
-  res.json(ListNotificationsResponse.parse(notifications));
+router.get("/notifications", async (_req, res): Promise<void> => {
+  const rows = await db
+    .select({
+      id: permitReportsTable.id,
+      status: permitReportsTable.status,
+      createdAt: permitReportsTable.createdAt,
+    })
+    .from(permitReportsTable)
+    .orderBy(desc(permitReportsTable.createdAt), desc(permitReportsTable.id))
+    .limit(50);
+  res.json(ListNotificationsResponse.parse(rows.map((row) => ({
+    id: row.id,
+    message: row.status === "All met"
+      ? "Good news! Your submission appears complete."
+      : "Your submission needs changes. See the items below.",
+    createdAt: row.createdAt.toISOString(),
+  }))));
 });
 
 export default router;

@@ -20,11 +20,14 @@ import {
   useGetReport,
   useUpdateReportItem,
   useListNotifications,
+  getListNotificationsQueryKey,
   getGetReportQueryKey,
+  getListReportsQueryKey,
   ReportItem
 } from "@workspace/api-client-react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -52,20 +55,24 @@ export default function Home() {
   );
 }
 
-function TopNav() {
+export function TopNav() {
   const { data: notifications } = useListNotifications();
   const unreadCount = notifications?.length || 0;
 
   return (
     <header className="border-b border-border/40 bg-card/50 backdrop-blur-sm sticky top-0 z-10 no-print">
       <div className="w-full max-w-5xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-primary">
+        <Link href="/" className="flex items-center gap-2 text-primary">
           <ShieldAlert className="w-6 h-6" />
           <h1 className="font-serif font-semibold text-lg md:text-xl tracking-tight">
             Permit Correction Helper
           </h1>
-        </div>
+        </Link>
         
+        <div className="flex items-center gap-2 md:gap-4">
+          <Link href="/reports" className="text-sm font-medium text-primary hover:underline whitespace-nowrap">
+            Past Reports
+          </Link>
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
@@ -97,6 +104,7 @@ function TopNav() {
             </div>
           </PopoverContent>
         </Popover>
+        </div>
       </div>
     </header>
   );
@@ -104,12 +112,20 @@ function TopNav() {
 
 function UploadFlow({ onReportGenerated }: { onReportGenerated: (id: number) => void }) {
   const [file, setFile] = useState<File | null>(null);
+  const [label, setLabel] = useState("");
   const [dragActive, setDragActive] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: samples, isLoading: loadingSamples } = useListSamples();
   const analyze = useAnalyzeLetter();
+  const queryClient = useQueryClient();
+
+  const onSaved = (id: number) => {
+    void queryClient.invalidateQueries({ queryKey: getListReportsQueryKey() });
+    void queryClient.invalidateQueries({ queryKey: getListNotificationsQueryKey() });
+    onReportGenerated(id);
+  };
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -154,10 +170,11 @@ function UploadFlow({ onReportGenerated }: { onReportGenerated: (id: number) => 
         data: {
           fileName: file.name,
           mimeType: file.type,
-          fileData: base64
+           fileData: base64,
+           label,
         }
       }, {
-        onSuccess: (data: any) => onReportGenerated(data.id),
+        onSuccess: (data: any) => onSaved(data.id),
         onSettled: () => setIsProcessing(false)
       });
     } catch (e) {
@@ -168,9 +185,9 @@ function UploadFlow({ onReportGenerated }: { onReportGenerated: (id: number) => 
   const runAnalysisWithSample = (sampleId: string) => {
     setIsProcessing(true);
     analyze.mutate({
-      data: { sampleId }
+      data: { sampleId, label }
     }, {
-      onSuccess: (data: any) => onReportGenerated(data.id),
+      onSuccess: (data: any) => onSaved(data.id),
       onSettled: () => setIsProcessing(false)
     });
   };
@@ -242,7 +259,6 @@ function UploadFlow({ onReportGenerated }: { onReportGenerated: (id: number) => 
                 <p className="font-medium text-foreground">{file.name}</p>
                 <div className="flex gap-3 justify-center">
                   <Button variant="outline" onClick={() => setFile(null)}>Remove</Button>
-                  <Button onClick={runAnalysisWithFile}>Analyze Document</Button>
                 </div>
               </div>
             ) : (
@@ -264,6 +280,25 @@ function UploadFlow({ onReportGenerated }: { onReportGenerated: (id: number) => 
                   }}
                 />
               </div>
+            )}
+          </div>
+
+          <div className="mt-6 space-y-3">
+            <label htmlFor="report-label" className="block text-sm font-medium text-foreground">
+              Label (optional)
+            </label>
+            <Input
+              id="report-label"
+              value={label}
+              onChange={(event) => setLabel(event.target.value)}
+              maxLength={120}
+              placeholder="e.g. [242] Kitchen remodel resubmittal"
+              className="bg-background"
+            />
+            {file && (
+              <Button className="w-full sm:w-auto" onClick={runAnalysisWithFile}>
+                Analyze Letter
+              </Button>
             )}
           </div>
 

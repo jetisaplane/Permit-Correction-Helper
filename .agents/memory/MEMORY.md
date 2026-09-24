@@ -1,0 +1,1 @@
+- [Permit report persistence](permit-report-persistence.md) — Use the workspace's managed PostgreSQL for permit report history rather than adding a separate SQLite store.

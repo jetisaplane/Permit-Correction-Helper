@@ -12,6 +12,8 @@ import {
 } from 'wouter';
 
 import HomePage from '@/pages/home';
+import { ReportView, TopNav } from '@/pages/home';
+import PastReports from '@/pages/past-reports';
 
 const queryClient = new QueryClient();
 
@@ -22,9 +24,25 @@ function Router() {
     <RoutedErrorBoundary>
       <Switch>
         <Route path="/" component={HomePage} />
+        <Route path="/reports" component={PastReports} />
+        <Route path="/reports/:id">
+          {(params) => <SavedReportPage id={Number(params.id)} />}
+        </Route>
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>
+  );
+}
+
+function SavedReportPage({ id }: { id: number }) {
+  const [, navigate] = useLocation();
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <TopNav />
+      <main className="flex-1 w-full max-w-5xl mx-auto p-4 md:p-8">
+        <ReportView reportId={id} onReset={() => navigate('/reports')} />
+      </main>
+    </div>
   );
 }
 
