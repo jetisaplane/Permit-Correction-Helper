@@ -1,1 +1,170 @@
-[]
+[
+  {
+    "id": "647477c8-779b-4bec-8edb-ac5edde661e9",
+    "position": 1,
+    "filepath": "src/pages/slides/Slide1.tsx",
+    "title": "AI Canvas and Governance",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a5f45417-2041-4d80-be2b-bba84ce16571",
+    "position": 2,
+    "filepath": "src/pages/slides/Slide2.tsx",
+    "title": "The course arc",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "6e716857-a3cf-48c8-aa3e-e94ed4fc0d7c",
+    "position": 3,
+    "filepath": "src/pages/slides/Slide3.tsx",
+    "title": "Six roles",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "1f8fd568-94b3-4b7e-96a3-fc3d6e1f5b27",
+    "position": 4,
+    "filepath": "src/pages/slides/Slide4.tsx",
+    "title": "AI Canvas origins",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "f4e69baa-3a57-45ed-907c-27078e6d1bee",
+    "position": 5,
+    "filepath": "src/pages/slides/Slide5.tsx",
+    "title": "AI Canvas for Generative and Agentic AI",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "54227875-b446-4804-8ab4-064153eef8c6",
+    "position": 6,
+    "filepath": "src/pages/slides/Slide6.tsx",
+    "title": "AI Canvas cells 1–12",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "e94aa416-7e3f-4582-a071-41494ce75401",
+    "position": 7,
+    "filepath": "src/pages/slides/Slide7.tsx",
+    "title": "The Problem",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "926b39fb-3278-480c-bd71-104c259d35e6",
+    "position": 8,
+    "filepath": "src/pages/slides/Slide8.tsx",
+    "title": "Autonomous driving reference",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "22bc15c1-ec79-4c5b-b73f-54a9b25ed8b3",
+    "position": 9,
+    "filepath": "src/pages/slides/Slide9.tsx",
+    "title": "Agent level",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "9a162dca-8129-4953-a701-fa76de48f03c",
+    "position": 10,
+    "filepath": "src/pages/slides/Slide10.tsx",
+    "title": "The AI System",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "902e2e51-bfb4-4ad4-8eb9-93c3086cf4f9",
+    "position": 11,
+    "filepath": "src/pages/slides/Slide11.tsx",
+    "title": "Action tier",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "4d60de99-a243-49fb-bdaa-6b3fbb88dca4",
+    "position": 12,
+    "filepath": "src/pages/slides/Slide12.tsx",
+    "title": "Oversight and Reality Check",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "6056a4f3-2916-4d86-8431-e200a577b8ea",
+    "position": 13,
+    "filepath": "src/pages/slides/Slide13.tsx",
+    "title": "BASICS design governance",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "6ac099a9-d0ef-45e9-a6d5-b5308913119e",
+    "position": 14,
+    "filepath": "src/pages/slides/Slide14.tsx",
+    "title": "BASICS — six questions",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "0a47bbce-a761-4f9f-bb6a-83627a3ae2e4",
+    "position": 15,
+    "filepath": "src/pages/slides/Slide15.tsx",
+    "title": "B — Bias",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "3e0386ad-a31e-4308-bdb5-a34e83e5de6c",
+    "position": 16,
+    "filepath": "src/pages/slides/Slide16.tsx",
+    "title": "A — Action Tier",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "07884269-3b56-404f-94fe-0ecd5a6008a5",
+    "position": 17,
+    "filepath": "src/pages/slides/Slide17.tsx",
+    "title": "S — Stakeholder",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "9d5e4975-e431-4b3e-a686-0dc8760c52ec",
+    "position": 18,
+    "filepath": "src/pages/slides/Slide18.tsx",
+    "title": "I — Intervention",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "d4718a08-145b-412a-9282-fb986c3e65b7",
+    "position": 19,
+    "filepath": "src/pages/slides/Slide19.tsx",
+    "title": "C — Contract",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "ec97a7ab-eaff-4b79-8755-fe1330162d42",
+    "position": 20,
+    "filepath": "src/pages/slides/Slide20.tsx",
+    "title": "S — Scope",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "f76c5d0a-8b56-4e13-b984-76fae78cbffd",
+    "position": 21,
+    "filepath": "src/pages/slides/Slide21.tsx",
+    "title": "BASICS closing",
+    "description": "Imported from the Week 4 AI Canvas and Governance presentation.",
+    "speakerNotes": ""
+  }
+]
