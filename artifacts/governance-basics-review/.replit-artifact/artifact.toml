@@ -1,0 +1,28 @@
+kind = "slides"
+previewPath = "/governance-basics-review/"
+title = "Governance BASICS Reference"
+description = "A reference copy of the uploaded governance presentation for reviewing its BASICS criteria alongside the permitting prototype."
+version = "1.0.0"
+id = "artifacts/governance-basics-review"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/governance-basics-review/" ]
+localPort = 21640
+
+[services.development]
+run = "pnpm --filter @workspace/governance-basics-review run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/governance-basics-review", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/governance-basics-review/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21640"
+BASE_PATH = "/governance-basics-review/"
